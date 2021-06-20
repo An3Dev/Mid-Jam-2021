@@ -27,13 +27,21 @@ public class PaintBall : MonoBehaviour
         this.speed = speed;
 
         rb.velocity = direction * speed;
+
+        // disables object after 6 seconds
+        CancelInvoke(nameof(DisableSelf));
+        Invoke(nameof(DisableSelf), 6);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    void DisableSelf()
     {
-        if (!collision.collider.CompareTag("PaintGun"))
+        gameObject.SetActive(false);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!collision.CompareTag("PaintGun"))
         {
-            Debug.Log("Paint ball collided");
             gameObject.SetActive(false);
         }
     }

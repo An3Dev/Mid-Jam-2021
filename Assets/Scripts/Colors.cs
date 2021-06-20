@@ -28,6 +28,17 @@ public class Colors : MonoBehaviour
         return Random.Range(0, colors.Length);
     }
 
+    public int GetRandomColorIndexExcludingColor(int color)
+    {
+        int i = Random.Range(0, colors.Length);
+        while(i == color)
+        {
+            i = Random.Range(0, colors.Length);
+        }
+
+        return i;
+    }
+
     public Color GetColorByIndex(int index)
     {
         return colors[index];

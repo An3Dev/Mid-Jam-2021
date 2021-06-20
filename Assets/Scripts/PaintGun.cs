@@ -1,19 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class PaintGun : MonoBehaviour
 {
     public Transform pivot, barrelEnd;
     public GameObject paintBallPrefab;
     public float maxRot = 50;
+    public ColorObject[] colorIndicators;
 
     Camera cam;
 
     int startPaintBallAmount = 20;
     PaintBall[] paintBalls;
 
+
     int selectedColorIndex = 0;
+    int totalColors;
+
+    float lastFireTime = -5;
 
     private void Awake()
     {
@@ -25,6 +32,34 @@ public class PaintGun : MonoBehaviour
             paintBalls[i] = paintBall.GetComponent<PaintBall>();
             paintBall.SetActive(false);
         }
+    }
+
+    private void Start()
+    {
+        totalColors = Colors.Instance.GetTotalNumColors();
+        selectedColorIndex = 0;
+        UpdateColorUI();
+        UpdateColorIndicators();      
+    }
+
+    void UpdateColorIndicators()
+    {
+        for(int i = 0; i < colorIndicators.Length; i++)
+        {
+            colorIndicators[i].SetColor(selectedColorIndex);
+        }
+    }
+
+    public void SetCurrentColor(int i)
+    {
+        selectedColorIndex = i;
+        UpdateColorIndicators();
+    }
+
+    public void UpdateColorUI()
+    {
+        UIManager.Instance.OnColorKeybindPressed(selectedColorIndex);
+        UpdateColorIndicators();
     }
 
     void RandomizePaintBall(PaintBall ball)
@@ -55,48 +90,63 @@ public class PaintGun : MonoBehaviour
         pivot.up = (cursorWorldPos - pivot.position).normalized;
         ClampGunRotation();
 
-        //Debug.Log(cursorWorldPos);
-
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            selectedColorIndex--;
+            if (selectedColorIndex < 0) selectedColorIndex = 0;
+            UpdateColorUI();
+        }
+        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            selectedColorIndex++;
+            if (selectedColorIndex > totalColors - 1) selectedColorIndex = totalColors- 1;
+            UpdateColorUI();
+        }
         // if user clicks on number 1 through 6, then select a color;
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        else if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             selectedColorIndex = 0;
-        } 
+            UpdateColorUI();
+        }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             selectedColorIndex = 1;
+            UpdateColorUI();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             selectedColorIndex = 2;
+            UpdateColorUI();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             selectedColorIndex = 3;
+            UpdateColorUI();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha5))
         {
             selectedColorIndex = 4;
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha6))
-        {
-            selectedColorIndex = 5;
+            UpdateColorUI();
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Time.timeSinceLevelLoad - lastFireTime > Stats.paintGunFiringGap && !EventSystem.current.IsPointerOverGameObject())
         {
-            Debug.Log("Shoot ball");
-            PaintBall ball = paintBalls[GetSpawnableBallIndex()];
-            ball.transform.parent = pivot;
-            ball.transform.localPosition = Vector3.zero;
-            ball.gameObject.SetActive(true);
-            ball.GetColorObject().SetColor(selectedColorIndex);
-            //RandomizePaintBall(ball);
-            ball.SetMovement(barrelEnd.up, ObjectProgression.Instance.paintBallSpeed);
+            //Debug.Log("Not over buttons");
+            if (Input.GetMouseButtonDown(0))
+            {
+                lastFireTime = Time.timeSinceLevelLoad;
+                PaintBall ball = paintBalls[GetSpawnableBallIndex()];
+                ball.transform.parent = barrelEnd;
+                ball.transform.localPosition = Vector3.zero;
+                ball.gameObject.SetActive(true);
+                ball.GetColorObject().SetColor(selectedColorIndex);
+                //RandomizePaintBall(ball);
+                ball.SetMovement(barrelEnd.up, Stats.paintBallSpeed);
 
-            // play shoot effect from barrel
-            // play shoot sound
-        }
+                // play shoot effect from barrel
+                // play shoot sound
+            }
+        }    
     }
 
     void ClampGunRotation()
