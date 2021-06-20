@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public bool isGameOver;
 
+    bool isPaused = false;
+
     private void Awake()
     {
         Application.targetFrameRate = 60;
@@ -20,11 +22,33 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
         }
+
+        Time.timeScale = 1;
     }
 
-    public void OnScoreChanges(int score)
+    private void Update()
     {
-        // change score UI
+        if (!isGameOver && Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!isPaused)
+            {
+                Time.timeScale = 0;
+                UIManager.Instance.OnPause();
+                isPaused = true;
+            }
+            else
+            {
+                Time.timeScale = 1;
+                UIManager.Instance.OnClickUnpause();
+                isPaused = false;
+            }
+        }
+    }
+
+    public void OnUnpause()
+    {
+        Time.timeScale = 1;
+        isPaused = false;
     }
 
     public void OnLivesChanges(int lives)
@@ -43,6 +67,15 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        Time.timeScale = 1;
+
         SceneManager.LoadScene("Main");
+    }
+
+    public void GoToMainMenu()
+    {
+        Time.timeScale = 1;
+
+        SceneManager.LoadScene("MainMenu");
     }
 }

@@ -11,6 +11,8 @@ public class PaintGun : MonoBehaviour
     public float maxRot = 50;
     public ColorObject[] colorIndicators;
 
+    public AudioClip shootSound;
+
     Camera cam;
 
     int startPaintBallAmount = 20;
@@ -21,6 +23,9 @@ public class PaintGun : MonoBehaviour
     int totalColors;
 
     float lastFireTime = -5;
+
+    public ParticleSystemRenderer psr;
+    public ParticleSystem ps;
 
     private void Awake()
     {
@@ -83,11 +88,16 @@ public class PaintGun : MonoBehaviour
 
     private void Update()
     {
-        // make gun look toward the cursor
-        Vector3 cursorWorldPos = cam.ScreenToWorldPoint(Input.mousePosition);
-        cursorWorldPos.z = 0;
 
-        pivot.up = (cursorWorldPos - pivot.position).normalized;
+        if (Time.timeScale != 0)
+        {
+            // make gun look toward the cursor
+            Vector3 cursorWorldPos = cam.ScreenToWorldPoint(Input.mousePosition);
+            cursorWorldPos.z = 0;
+
+            pivot.up = (cursorWorldPos - pivot.position).normalized;
+        }
+        
         ClampGunRotation();
 
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
@@ -143,8 +153,16 @@ public class PaintGun : MonoBehaviour
                 //RandomizePaintBall(ball);
                 ball.SetMovement(barrelEnd.up, Stats.paintBallSpeed);
 
-                // play shoot effect from barrel
-                // play shoot sound
+                AudioManager.Instance.PlayOneShotSFX(shootSound);
+
+                Material newMat = psr.material;
+                Color color = Colors.Instance.GetColorByIndex(selectedColorIndex);
+                newMat.color = color;
+                Vector4 v = new Vector4(color.r, color.g, color.b, color.a) * 2f;
+                newMat.SetColor("_EmissionColor", v);
+                psr.material = newMat;
+
+                ps.Play();       
             }
         }    
     }

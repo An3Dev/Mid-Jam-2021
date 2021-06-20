@@ -110,6 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1861f1f693014f64aa6dbc02be4186df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explodeSoundEffect: {fileID: 0}
 --- !u!50 &8413094315878874518
 Rigidbody2D:
   serializedVersion: 4

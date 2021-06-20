@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ObjectToContain : MonoBehaviour
 {
+    public AudioClip changeColorSFX;
+
     ColorObject colorObject;
     Rigidbody2D rb;
     Collider2D collider;
@@ -76,6 +78,7 @@ public class ObjectToContain : MonoBehaviour
             colorObject.SetColor(collision.GetComponent<ColorObject>().GetColorIndex());
             
             SpawnParticleSystem("PaintBallParticleSystem", collision.transform.position);
+            AudioManager.Instance.PlayOneShotSFX(changeColorSFX);
         }
     }
 
@@ -99,6 +102,7 @@ public class ObjectToContain : MonoBehaviour
 
         gameObject.SetActive(false);
     }
+
 
     public void OnCorrect()
     {

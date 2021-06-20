@@ -5,6 +5,9 @@ using UnityEngine;
 public class Container : MonoBehaviour
 {
     public static Container Instance;
+
+    public AudioClip absorbSFX, deflectSFX, changeColorSFX, hitDeadzoneSFX;
+
     ColorObject colorObject;
 
     int numObjectsForContainerChange = 0;
@@ -96,13 +99,15 @@ public class Container : MonoBehaviour
                 lastObject.OnCorrect();
                 Stats.IncreaseScore();
                 animator.SetTrigger("Absorb");
+                AudioManager.Instance.PlayOneShotSFX(absorbSFX);
+
             }
             else
             {
                 lastObject.OnIncorrect();
                 Stats.DecreaseLives(1);
                 animator.SetTrigger("Deflect");
-
+                AudioManager.Instance.PlayOneShotSFX(deflectSFX);
             }
 
             //numObjectsThatPassedForThisColor++;
@@ -114,6 +119,7 @@ public class Container : MonoBehaviour
                 //ChangeColor();
                 // play retreat animation
                 animator.SetTrigger("ChangeColor");
+                AudioManager.Instance.PlayOneShotSFX(changeColorSFX);
             }
         }
     }
@@ -125,6 +131,8 @@ public class Container : MonoBehaviour
         ball.OnIncorrect();
         Stats.DecreaseLives(1);
         animator.SetTrigger("HitDeadzone");
+
+        AudioManager.Instance.PlayOneShotSFX(hitDeadzoneSFX);
     }
 
     public ColorObject GetColorObject()

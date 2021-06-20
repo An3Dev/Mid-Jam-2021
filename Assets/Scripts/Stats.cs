@@ -19,7 +19,7 @@ public class Stats : MonoBehaviour
 
     public static float startSpeed = 2;
     public static float maxSpeed = 4;
-    public static int scoreAtMaxSpeed = 10;
+    public static int scoreAtMaxSpeed = 30;
 
     public static float paintGunFiringGap = 0.5f;
 
@@ -29,7 +29,7 @@ public class Stats : MonoBehaviour
 
     public static float maxViewportObjectPos = 0.7f, minViewportObjectPos = 0.3f;
 
-    public static float maxDistanceFromCenterScore = 10;
+    public static float maxDistanceFromCenterScore = 30;
 
     public AnimationCurve distanceFromCenter;
 
@@ -56,7 +56,7 @@ public class Stats : MonoBehaviour
     public static void IncreaseScore()
     {
         score++;
-        GameManager.Instance.OnScoreChanges(score);
+        //GameManager.Instance.OnScoreChanges(score);
         UIManager.Instance.OnScoreChanged(score);
     }
 

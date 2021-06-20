@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
+
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
@@ -37,6 +39,17 @@ public class UIManager : MonoBehaviour
         highScoreText.text = "Best: " + Stats.highScore;
     }
 
+    public void OnPause()
+    {
+        canvasAnimator.SetTrigger("Pause");
+    }
+
+    public void OnClickUnpause()
+    {
+        canvasAnimator.SetTrigger("Unpause");
+        GameManager.Instance.OnUnpause();
+    }
+
     public void OnGameOver()
     {
         canvasAnimator.SetTrigger("GameOver");
@@ -45,6 +58,7 @@ public class UIManager : MonoBehaviour
     public void OnScoreChanged(int score)
     {
         scoreText.text = "Score: " + score;
+        canvasAnimator.SetTrigger("PlayerScored");
     }
 
     public void OnLivesChanged(int lives)

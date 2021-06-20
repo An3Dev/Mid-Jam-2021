@@ -9,6 +9,8 @@ public class PaintBall : MonoBehaviour
 
     Vector2 direction;
     float speed;
+
+    public AudioClip explodeSoundEffect;
     private void Awake()
     {
         colorObject = GetComponent<ColorObject>();
@@ -42,6 +44,7 @@ public class PaintBall : MonoBehaviour
     {
         if (!collision.CompareTag("PaintGun"))
         {
+            AudioManager.Instance.PlayOneShotSFX(explodeSoundEffect);
             gameObject.SetActive(false);
         }
     }

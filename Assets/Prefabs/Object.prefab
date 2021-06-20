@@ -157,3 +157,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a07df16cc6bf0d4b8d66bcd5c17091f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  changeColorSFX: {fileID: 8300000, guid: e7476fe64cbcd9e4c9269296012c2acd, type: 3}
